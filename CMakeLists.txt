@@ -25,12 +25,8 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/include/camera.h
     ${PROJECT_SOURCE_DIR}/src/camera.cpp
 	
-    ${PROJECT_SOURCE_DIR}/resource/colorShader.vert
-    ${PROJECT_SOURCE_DIR}/resource/colorShader.frag
-    ${PROJECT_SOURCE_DIR}/resource/shaderGouraud.vert
-    ${PROJECT_SOURCE_DIR}/resource/shaderGouraud.frag
-    ${PROJECT_SOURCE_DIR}/resource/textureShader.vert
-    ${PROJECT_SOURCE_DIR}/resource/textureShader.frag
+    ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
+    ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
 )
 
 # Add executable based on the source files

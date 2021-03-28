@@ -1,10 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\include",
-    "\\resource",
-    "\\src"
+    ""
   ],
-  "SelectedNode": "\\resource\\rayMarchShader.frag",
+  "SelectedNode": "\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

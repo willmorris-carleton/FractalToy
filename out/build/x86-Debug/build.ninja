@@ -84,7 +84,7 @@ build COMP3009_FinalProject_d.exe: CXX_EXECUTABLE_LINKER__COMP3009_FinalProject_
 # Utility command for edit_cache
 
 build CMakeFiles\edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\willi\Desktop\Graphics\project\project\out\build\x86-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D C:\Users\willi\Desktop\Graphics\project\FractalToy\out\build\x86-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -95,7 +95,7 @@ build edit_cache: phony CMakeFiles\edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles\rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\willi\Desktop\Graphics\project\project\out\build\x86-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\willi\Desktop\Graphics\project\project -BC:\Users\willi\Desktop\Graphics\project\project\out\build\x86-Debug"
+  COMMAND = cmd.exe /C "cd /D C:\Users\willi\Desktop\Graphics\project\FractalToy\out\build\x86-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" --regenerate-during-build -SC:\Users\willi\Desktop\Graphics\project\FractalToy -BC:\Users\willi\Desktop\Graphics\project\FractalToy\out\build\x86-Debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -113,7 +113,7 @@ build COMP3009_FinalProject: phony COMP3009_FinalProject_d.exe
 # =============================================================================
 
 #############################################
-# Folder: C:/Users/willi/Desktop/Graphics/project/project/out/build/x86-Debug
+# Folder: C:/Users/willi/Desktop/Graphics/project/FractalToy/out/build/x86-Debug
 
 build all: phony COMP3009_FinalProject_d.exe
 

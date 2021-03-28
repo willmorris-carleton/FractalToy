@@ -32,7 +32,7 @@ Copyright (c):
 #include <vector>
 
 //Change this file path to point to the resource/ directory containing the shaders. 
-#define DIRECTORY "C:/Users/willi/Desktop/Graphics/project/project/"
+#define DIRECTORY "C:/Users/willi/Desktop/Graphics/project/FractalToy/"
 
 // Macro for printing exceptions
 #define PrintException(exception_object)\

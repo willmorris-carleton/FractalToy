@@ -1,3 +1,3 @@
-C:/Users/willi/Desktop/Graphics/project/project/out/build/x86-Debug/CMakeFiles/COMP3009_FinalProject.dir
-C:/Users/willi/Desktop/Graphics/project/project/out/build/x86-Debug/CMakeFiles/edit_cache.dir
-C:/Users/willi/Desktop/Graphics/project/project/out/build/x86-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/willi/Desktop/Graphics/project/FractalToy/out/build/x86-Debug/CMakeFiles/COMP3009_FinalProject.dir
+C:/Users/willi/Desktop/Graphics/project/FractalToy/out/build/x86-Debug/CMakeFiles/edit_cache.dir
+C:/Users/willi/Desktop/Graphics/project/FractalToy/out/build/x86-Debug/CMakeFiles/rebuild_cache.dir
