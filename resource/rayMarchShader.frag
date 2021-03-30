@@ -54,7 +54,7 @@ void main(void)
 }
 
 // --------------------------------------------------------------
-const vec3 objectHitCol = vec3(0.5,0.0,0.5);
+const vec3 objectHitCol = vec3(0.7,0.8,0.0);
 const float SphereRadius = 1;
 
 float distanceToSphere(vec3 point) {
@@ -88,7 +88,7 @@ float distanceToClosestObject(vec3 p) {
     
     float c = 10;// sin(f_time)*5 + 10;
     vec3 point = mod(p+0.5*c, c) -0.5*c;
-    return distanceToM(point);
+    return distanceToSphere(point);
 }
 
 const float dx = 0.0001;
@@ -103,13 +103,13 @@ vec3 estimateNormal(vec3 point) {
 
 vec3 calculateLighting(vec3 point) {
 
-    //the default vtx color. 
-	vec4 color  = vec4(objectHitCol,1.0);
-
 	vec3 N = estimateNormal(point);
 	vec3 L = normalize(point - lightPos);
 	vec3 V = normalize(camPos - point);
 	vec3 R = normalize(reflect(-L, N));
+
+    //the default color. 
+	vec4 color  = vec4(objectHitCol,1.0);
 
 	vec3 ambient, diffuse, specular;
 	

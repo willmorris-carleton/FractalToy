@@ -22,8 +22,13 @@ include_directories(${PROJECT_SOURCE_DIR}/assets)
 # Specify project source files
 set(SRCS
     ${PROJECT_SOURCE_DIR}/main.cpp
-    ${PROJECT_SOURCE_DIR}/include/camera.h
+
     ${PROJECT_SOURCE_DIR}/src/camera.cpp
+    ${PROJECT_SOURCE_DIR}/src/quad.cpp
+
+    ${PROJECT_SOURCE_DIR}/include/camera.h
+    ${PROJECT_SOURCE_DIR}/include/geometry.h
+    ${PROJECT_SOURCE_DIR}/include/quad.h
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
