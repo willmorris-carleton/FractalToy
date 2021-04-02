@@ -15,10 +15,10 @@ uniform mat4 view_mat;
 uniform mat4 world_mat;
 uniform vec3 lightPos;
 
-uniform vec3 ambient_color =  vec3(0.2,0.2,0.2);
+uniform vec3 ambient_color =  vec3(0.4,0.4,0.4);
 uniform vec3 diffuse_color =  vec3(0.75,0.75,0.75);
 uniform vec3 specular_color = vec3(0.8,0.8,0.8);
-uniform float shine = 5.0f;
+uniform float shine = 25.0f;
 uniform float coefA =0.4;
 uniform float coefD = 1;
 uniform float coefS = 1.5;
@@ -54,7 +54,7 @@ void main(void)
 }
 
 // --------------------------------------------------------------
-const vec3 objectHitCol = vec3(0.7,0.8,0.0);
+const vec3 objectHitCol = vec3(0.9,0.8,0.9);
 const float SphereRadius = 1;
 
 float distanceToSphere(vec3 point) {
@@ -104,7 +104,7 @@ vec3 estimateNormal(vec3 point) {
 vec3 calculateLighting(vec3 point) {
 
 	vec3 N = estimateNormal(point);
-	vec3 L = normalize(point - lightPos);
+	vec3 L = normalize(lightPos - point);
 	vec3 V = normalize(camPos - point);
 	vec3 R = normalize(reflect(-L, N));
 
@@ -127,7 +127,7 @@ vec3 calculateLighting(vec3 point) {
 	
 }
 
-const vec3 bgColor = vec3(0.1,0.1,0.1);
+const vec3 bgColor = vec3(0.53,0.81,0.92);
 const float maxDistance = 1000.f;
 const float minDistance = 0.0001f;
 const int maxMarchingSteps = 100;
@@ -163,7 +163,7 @@ vec3 rayMarch(vec3 start, vec3 ray) {
     //Ray did not hit a object
     
     vec3 glow = vec3(0.1,0,0.05);
-    return mix(bgColor, glow, minDistance/closestDistance);
+    return bgColor;//mix(bgColor, glow, minDistance/closestDistance);
 }
 // --------------------------------------------------------------
 

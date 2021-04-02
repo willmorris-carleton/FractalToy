@@ -30,8 +30,8 @@ public:
 
 	//TO DO: Complete the following functions------
 	int Roll(float angleDeg);
-	int Pitch(float angleDeg);
-	int Yaw(float angleDeg);
+	virtual int Pitch(float angleDeg);
+	virtual int Yaw(float angleDeg);
 
 	glm::vec3 MoveForward(float numUnits);
 	glm::vec3 MoveBackward(float numUnits);
@@ -73,7 +73,7 @@ public:
 
 	int SetPerspectiveView(float fieldOfView, float aspectRatio, float nearPlane, float farPlane);
 
-private:
+protected:
 	glm::mat4 viewMat;
 	glm::mat4 projMat;
 	glm::vec3 position;		

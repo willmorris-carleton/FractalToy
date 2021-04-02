@@ -24,6 +24,7 @@ Copyright (c):
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <camera.h>
+#include <fpsCamera.h>
 #include <geometry.h>
 #include <quad.h>
 
@@ -199,13 +200,20 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 const float mouseSensitivity = 1.f;
+bool focused = false;
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
+
+	if (focused == false) {
+		glfwSetCursorPos(window, window_width_g / 2, window_height_g / 2);
+		focused = true;
+		return;
+	}
 
 	float middleX = window_width_g / 2;
 	float middleY = window_height_g / 2;
-
-	rayCamera->Yaw(mouseSensitivity*middleX - xpos);
-	rayCamera->Pitch(mouseSensitivity * middleY - ypos);
+	
+	rayCamera->Yaw(middleX - xpos * mouseSensitivity);
+	rayCamera->Pitch(middleY - ypos * mouseSensitivity);
 
 	glfwSetCursorPos(window, window_width_g / 2, window_height_g / 2);
 }
@@ -516,8 +524,8 @@ int main(void) {
 		camera = new Camera();
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
-		rayCamera = new Camera();
-		rayCamera->SetCamera(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		rayCamera = (Camera* ) new FPSCamera();
+		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
 		
@@ -558,7 +566,7 @@ int main(void) {
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 
-			std::cout << "FPS: " << 1 / delta << std::endl;
+			//std::cout << "FPS: " << 1 / delta << std::endl;
 		}
 	}
 	catch (std::exception &e) {
