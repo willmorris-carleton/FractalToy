@@ -53,6 +53,18 @@ void main(void)
     
 }
 
+//MATH HELPER FUNCTIONS
+float intersect(float distA, float distB) {
+    return max(distA, distB);
+}
+
+float union(float distA, float distB) {
+    return min(distA, distB);
+}
+
+float difference(float distA, float distB) {
+    return max(distA, -distB);
+}
 // --------------------------------------------------------------
 const vec3 objectHitCol = vec3(0.9,0.8,0.9);
 const float SphereRadius = 1;
@@ -84,11 +96,14 @@ float distanceToM(vec3 point) {
     return 0.5* log(r) * r/dr;
 }
 
+const vec3 bound = vec3(2,0.5,1);
+float distanceToCube(vec3 point) {
+    return length(max(abs(point)-bound,0.0));
+}
+
 float distanceToClosestObject(vec3 p) { 
     
-    float c = 10;// sin(f_time)*5 + 10;
-    vec3 point = mod(p+0.5*c, c) -0.5*c;
-    return distanceToSphere(point);
+    return union(distanceToCube(p), distanceToSphere(p));
 }
 
 const float dx = 0.0001;

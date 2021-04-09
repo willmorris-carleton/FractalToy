@@ -6,7 +6,7 @@ glm::vec3 FPSCamera::WorldUp = glm::vec3(0, 1, 0);
 int FPSCamera::Pitch(float angleDeg)
 {
 	
-	std::cout << angleDeg << std::endl;
+	//std::cout << angleDeg << std::endl;
 
 	curPitch += angleDeg;
 
@@ -21,7 +21,7 @@ int FPSCamera::Pitch(float angleDeg)
 		ang = angleDeg;
 	}
 	
-	std::cout << "Pitch: " << curPitch << std::endl;
+	//std::cout << "Pitch: " << curPitch << std::endl;
 
 	glm::quat rotation = glm::angleAxis(glm::radians(ang), GetSide());
 	orientation_ *= rotation;

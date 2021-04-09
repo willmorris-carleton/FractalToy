@@ -27,6 +27,8 @@ Copyright (c):
 #include <fpsCamera.h>
 #include <geometry.h>
 #include <quad.h>
+#include <GameTime.h>
+#include <GameInput.h>
 
 #include <fstream>
 #include <sstream>
@@ -64,6 +66,9 @@ GLFWwindow* window;
 Camera* camera;
 Camera* rayCamera;
 glm::vec3 light_pos;
+
+GameTime* gTime;
+GameInput* gInput;
 
 //This function is used to read the shader programs. OpenGL does not read them as a
 //specific file type, but instead as simply a text file containing c code. 
@@ -151,55 +156,62 @@ GLuint LoadShaders(std::string shaderName) {
 // Callback for when a key is pressed
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
+	gInput->keyCallback(window, key, scancode, action, mods);
+
+}
+
+void applyKeyboardInput() {
+
 	// Quit the program when pressing 'q'
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+	if (gInput->getKey(GLFW_KEY_Q)) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
 	// View control
 	float rot_factor(glm::pi<float>() / 180);
-	float trans_factor = 0.25;
+	float trans_factor = 20 * gTime->getDelta(); //0.25 units per second
 	rot_factor *= 200;
 
-	if (key == GLFW_KEY_UP) {
+	if (gInput->getKey(GLFW_KEY_UP)) {
 		rayCamera->Pitch(rot_factor);
 	}
-	if (key == GLFW_KEY_DOWN) {
+	if (gInput->getKey(GLFW_KEY_DOWN)) {
 		rayCamera->Pitch(-rot_factor);
 	}
-	if (key == GLFW_KEY_LEFT) {
+	if (gInput->getKey(GLFW_KEY_LEFT)) {
 		rayCamera->Yaw(-rot_factor);
 	}
-	if (key == GLFW_KEY_RIGHT) {
+	if (gInput->getKey(GLFW_KEY_RIGHT)) {
 		rayCamera->Yaw(rot_factor);
 	}
-	if (key == GLFW_KEY_N) {
+	if (gInput->getKey(GLFW_KEY_N)) {
 		rayCamera->Roll(-rot_factor);
 	}
-	if (key == GLFW_KEY_M) {
+	if (gInput->getKey(GLFW_KEY_M)) {
 		rayCamera->Roll(rot_factor);
 	}
-	if (key == GLFW_KEY_W) {
+	if (gInput->getKey(GLFW_KEY_W)) {
 		rayCamera->MoveForward(trans_factor);
 	}
-	if (key == GLFW_KEY_S) {
+	if (gInput->getKey(GLFW_KEY_S)) {
 		rayCamera->MoveBackward(trans_factor);
 	}
-	if (key == GLFW_KEY_A) {
+	if (gInput->getKey(GLFW_KEY_A)) {
 		rayCamera->moveLeft(-trans_factor);
 	}
-	if (key == GLFW_KEY_D) {
+	if (gInput->getKey(GLFW_KEY_D)) {
 		rayCamera->MoveRight(-trans_factor);
 	}
-	if (key == GLFW_KEY_R) {
-		rayCamera->MoveUp(trans_factor);
+	if (gInput->getKey(GLFW_KEY_SPACE)) {
+		rayCamera->MoveUp(-trans_factor);
 	}
-	if (key == GLFW_KEY_F) {
-		rayCamera->MoveDown(trans_factor);
+	if (gInput->getKey(GLFW_KEY_LEFT_CONTROL)) {
+		rayCamera->MoveDown(-trans_factor);
 	}
+
 }
 
-const float mouseSensitivity = 1.f;
+const float mouseSensitivity = 15.f; //Degrees per second
 bool focused = false;
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 
@@ -212,8 +224,8 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	float middleX = window_width_g / 2;
 	float middleY = window_height_g / 2;
 	
-	rayCamera->Yaw(middleX - xpos * mouseSensitivity);
-	rayCamera->Pitch(middleY - ypos * mouseSensitivity);
+	rayCamera->Yaw((middleX - xpos) * mouseSensitivity * gTime->getDelta());
+	rayCamera->Pitch((middleY - ypos) * mouseSensitivity * gTime->getDelta());
 
 	glfwSetCursorPos(window, window_width_g / 2, window_height_g / 2);
 }
@@ -532,6 +544,8 @@ int main(void) {
 		// Create screen
 		Geometry* square = (Geometry*) new Quad();
 
+		gInput = new GameInput();
+
 		//Set the proper callbacks. 
 		glfwSetWindowUserPointer(window, (void *)&projection_matrix);
 		glfwSetKeyCallback(window, KeyCallback);
@@ -543,19 +557,16 @@ int main(void) {
 		glm::quat orientation = glm::angleAxis(0.0f, glm::vec3(0.0, 1.0, 0.0));
 		glm::vec3 scale = glm::vec3(1);
 		glm::vec3 translation = glm::vec3(0.0);
-		light_pos = glm::vec3(2.0, 5.0, 3.0);
+		light_pos = glm::vec3(1, -1, 4);
+
+		gTime = new GameTime();
 
 		PrintOpenGLInfo();
 
-		float delta;
-		float last_time = glfwGetTime();
 		while (!glfwWindowShouldClose(window)) {
 
-			//Delta time makes it so the speed of rotation is constant and not dependent
-			//on the framerate 
-			float current_time = glfwGetTime();
-			delta = current_time - last_time;
-			last_time = current_time;
+			gTime->update();
+			
 			//Clear the screen
 			glClearColor(background[0],background[1],background[2], 0.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -564,9 +575,10 @@ int main(void) {
 			//Render(sphere, textureShader, glm::vec3(0.5,0,0), scale*(float)2, orientation, texture2);
 
 			glfwPollEvents();
+			applyKeyboardInput();
 			glfwSwapBuffers(window);
 
-			//std::cout << "FPS: " << 1 / delta << std::endl;
+			std::cout << "FPS: " << gTime->getFPS() << std::endl;
 		}
 	}
 	catch (std::exception &e) {

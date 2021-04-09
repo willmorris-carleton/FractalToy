@@ -26,11 +26,15 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/src/camera.cpp
     ${PROJECT_SOURCE_DIR}/src/quad.cpp
     ${PROJECT_SOURCE_DIR}/src/fpsCamera.cpp
+    ${PROJECT_SOURCE_DIR}/src/GameTime.cpp
+    ${PROJECT_SOURCE_DIR}/src/GameInput.cpp
 
     ${PROJECT_SOURCE_DIR}/include/camera.h
     ${PROJECT_SOURCE_DIR}/include/geometry.h
     ${PROJECT_SOURCE_DIR}/include/quad.h
     ${PROJECT_SOURCE_DIR}/include/fpsCamera.h
+    ${PROJECT_SOURCE_DIR}/include/GameTime.h
+    ${PROJECT_SOURCE_DIR}/include/GameInput.h
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
