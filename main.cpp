@@ -547,7 +547,7 @@ int main(void) {
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 		rayCamera = (Camera* ) new FPSCamera();
-		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		rayCamera->SetCamera(glm::vec3(0, -3, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
 		

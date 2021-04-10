@@ -104,9 +104,14 @@ float distanceToSphere(vec3 point) {
     return length(point - SpherePos) - SphereRadius;
 }
 
-const vec3 bound = vec3(2,0.5,1);
-float distanceToCube(vec3 point) {
-    return length(max(abs(point)-bound,0.0));
+float distanceToCube(vec3 point, vec3 volume) {
+    return length(max(abs(point)-volume,0.0));
+}
+
+float sdBox( in vec2 p, in vec2 b )
+{
+    vec2 d = abs(p)-b;
+    return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
 }
 
 const float floorY = 10f;
@@ -173,8 +178,34 @@ float distanceToSierpiensky(vec3 point) {
     
 }
 
+const float inf = 10000f;
+
+float distanceToCross(vec3 p) {
+    float da = sdBox(p.xy,vec2(1.0));
+    float db = sdBox(p.yz,vec2(1.0));
+    float dc = sdBox(p.zx,vec2(1.0));
+    return min(da,min(db,dc));
+}
+
+float distanceToMenger(vec3 p) {
+    float d = distanceToCube(p,vec3(1.0));
+
+   float s = 1.0;
+   for( int m=0; m<5; m++ )
+   {
+      vec3 a = mod( p*s, 2.0 )-1.0;
+      s *= 3.0;
+      vec3 r = 1.0 - 3.0*abs(a);
+
+      float c = distanceToCross(r)/s;
+      d = max(d,c);
+   }
+
+   return d;
+}
+
 float distanceToClosestObject(vec3 p) {
-    return union(distanceToM(translate(p, vec3(0,2,0))), distanceToFloor(p));
+    return union(distanceToMenger(p + vec3(0,3,0)), distanceToFloor(p));
 }
 
 const float dx = 0.001;
