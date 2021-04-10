@@ -38,6 +38,8 @@ set(SRCS
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
+    ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.frag
+    ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.vert
 )
 
 # Add executable based on the source files

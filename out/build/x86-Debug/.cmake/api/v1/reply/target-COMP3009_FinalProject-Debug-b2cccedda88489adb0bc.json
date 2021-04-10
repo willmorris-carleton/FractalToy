@@ -29,31 +29,31 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 44,
+				"line" : 46,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 49,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 71,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 72,
+				"line" : 51,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
 				"line" : 73,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 74,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 75,
 				"parent" : 0
 			},
 			{
@@ -83,7 +83,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 55,
+				"line" : 57,
 				"parent" : 0
 			}
 		]
@@ -210,7 +210,9 @@
 			"sourceIndexes" : 
 			[
 				12,
-				13
+				13,
+				14,
+				15
 			]
 		}
 	],
@@ -290,6 +292,16 @@
 		{
 			"backtrace" : 1,
 			"path" : "resource/rayMarchShader.frag",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "resource/infiniteRayMarchShader.frag",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 1,
+			"path" : "resource/infiniteRayMarchShader.vert",
 			"sourceGroupIndex" : 2
 		}
 	],

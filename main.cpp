@@ -160,6 +160,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 }
 
+float testvarA = 0.0f;
+
 void applyKeyboardInput() {
 
 	// Quit the program when pressing 'q'
@@ -207,6 +209,15 @@ void applyKeyboardInput() {
 	}
 	if (gInput->getKey(GLFW_KEY_LEFT_CONTROL)) {
 		rayCamera->MoveDown(-trans_factor);
+	}
+
+	if (gInput->getKey(GLFW_KEY_O)) {
+		testvarA -= 0.1f;
+		std::cout << testvarA << std::endl;
+	}
+	if (gInput->getKey(GLFW_KEY_P)) {
+		testvarA += 0.1f;
+		std::cout << testvarA << std::endl;
 	}
 
 }
@@ -468,9 +479,8 @@ void RenderQuadScreen(Geometry* geom, GLuint shader, glm::vec3 translation, glm:
 	float time = glfwGetTime();
 	glUniform1f(timer_var, time);
 
-	//load camera position
-	GLint quad_var = glGetUniformLocation(shader, "quadPos");
-	glUniform3fv(quad_var, 1, glm::value_ptr(translation));
+	GLint tester_var = glGetUniformLocation(shader, "testvarA");
+	glUniform1f(tester_var, testvarA);
 
 	//load camera position
 	GLint cam_var = glGetUniformLocation(shader, "camPos");
@@ -557,7 +567,7 @@ int main(void) {
 		glm::quat orientation = glm::angleAxis(0.0f, glm::vec3(0.0, 1.0, 0.0));
 		glm::vec3 scale = glm::vec3(1);
 		glm::vec3 translation = glm::vec3(0.0);
-		light_pos = glm::vec3(1, -1, 4);
+		light_pos = glm::vec3(1, -5, 4);
 
 		gTime = new GameTime();
 
