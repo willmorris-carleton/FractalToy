@@ -91,6 +91,7 @@ vec3 translate(vec3 point, vec3 trans)
     return point + trans;
 }
 
+
 vec3 fold(vec3 p, vec3 n, float d) {
     return p-2*n*min(0,dot(p,n)-d);
 }
@@ -108,7 +109,7 @@ float distanceToCube(vec3 point, vec3 volume) {
     return length(max(abs(point)-volume,0.0));
 }
 
-float sdBox( in vec2 p, in vec2 b )
+float distanceToSquare( in vec2 p, in vec2 b )
 {
     vec2 d = abs(p)-b;
     return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
@@ -148,64 +149,58 @@ float distanceToTetrahedron(vec3 p, float r) {
 	return (md - r) / (sqrt(3.0));
 }
 
-float distanceToSierpiensky(vec3 point) {
+vec3 sierpinskiFold(vec3 p) {
+    vec3 z = p;
+	z.xy -= min(z.x + z.y, 0.0);
+	z.xz -= min(z.x + z.z, 0.0);
+	z.yz -= min(z.y + z.z, 0.0);
+    return z;
+}
+
+float distanceToSierpiensky(vec3 p) {
     
-    float s = 1;
-    vec3 p = point;
-
-    float pws = 1;
-
-    int iterations = 5;
-    for (int i=0; i < iterations; i++) {
-
-        p = fold(p, normalize(vec3(1,1,0)), 0);
-        p = translate(p, vec3(0, 2, 0));
-
-        p = fold(p, normalize(vec3(0,1,1)), 0);
-        p = translate(p, vec3(-2, -2, 0));
-
-        p = fold(p, normalize(vec3(1,0,1)), 0);
-        p = translate(p, vec3(-2, 0, -2));
-
-        p = fold(p, normalize(vec3(1,0,1)), 0);
-        p = fold(p, normalize(vec3(1,1,0)), 0);
-        p = fold(p, normalize(vec3(0,1,1)), 0);
-        p = translate(p, vec3(-pws, -pws, -pws));
-
+    float s = 200;
+    vec3 s1 = sierpinskiFold(p);
+    for (int i = 0; i < int(testvarA); i++) {
+        s1 = translate(s1,vec3(-s,-s,-s));
+        s1 = sierpinskiFold(s1);
+        s/=2;
     }
-    
-    return distanceToTetrahedron(p, s);
+    float d = distanceToTetrahedron(translate(s1,vec3(-s,-s,-s)), s);
+
+    return d;
     
 }
 
-const float inf = 10000f;
-
 float distanceToCross(vec3 p) {
-    float da = sdBox(p.xy,vec2(1.0));
-    float db = sdBox(p.yz,vec2(1.0));
-    float dc = sdBox(p.zx,vec2(1.0));
-    return min(da,min(db,dc));
+    float da = distanceToSquare(p.xy,vec2(1.0));
+    float db = distanceToSquare(p.yz,vec2(1.0));
+    float dc = distanceToSquare(p.zx,vec2(1.0));
+    return union(da,union(db,dc));
 }
 
 float distanceToMenger(vec3 p) {
     float d = distanceToCube(p,vec3(1.0));
 
    float s = 1.0;
-   for( int m=0; m<5; m++ )
+   for( int m=0; m<2; m++ )
    {
       vec3 a = mod( p*s, 2.0 )-1.0;
       s *= 3.0;
       vec3 r = 1.0 - 3.0*abs(a);
 
       float c = distanceToCross(r)/s;
-      d = max(d,c);
+      d = intersect(d,c);
    }
 
    return d;
 }
 
 float distanceToClosestObject(vec3 p) {
-    return union(distanceToMenger(p + vec3(0,3,0)), distanceToFloor(p));
+    float c = 10000;// sin(f_time)*5 + 10;
+    vec3 point = mod(p+0.5*c, c) -0.5*c;
+    return distanceToSierpiensky(point);
+
 }
 
 const float dx = 0.001;
@@ -262,8 +257,8 @@ const vec3 glow = vec3(1,1,1);
 const float maxDistance = 1000.f;
 const float minDistance = 0.001f;
 const float fogDistance = 25.f; //Distance where fog starts setting in
-const int glowSteps = 10; //Min marching steps where glow is applied
-const int maxMarchingSteps = 250;
+const int glowSteps = 5; //Min marching steps where glow is applied
+const int maxMarchingSteps = 100;
 
 vec3 addGlowCol(vec3 col, int curStep) {
     if (curStep < glowSteps) return col;

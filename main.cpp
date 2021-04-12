@@ -171,7 +171,7 @@ void applyKeyboardInput() {
 
 	// View control
 	float rot_factor(glm::pi<float>() / 180);
-	float trans_factor = 20 * gTime->getDelta(); //0.25 units per second
+	float trans_factor = 200 * gTime->getDelta(); //0.25 units per second
 	rot_factor *= 200;
 
 	if (gInput->getKey(GLFW_KEY_UP)) {
@@ -224,6 +224,12 @@ void applyKeyboardInput() {
 
 const float mouseSensitivity = 15.f; //Degrees per second
 bool focused = false;
+
+void focusedCallback(GLFWwindow* window, int focused) {
+	if (focused == GLFW_FOCUSED) focused = true;
+	else focused = false;
+}
+
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
 
 	if (focused == false) {
@@ -547,7 +553,7 @@ int main(void) {
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 		rayCamera = (Camera* ) new FPSCamera();
-		rayCamera->SetCamera(glm::vec3(0, -3, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
 		
