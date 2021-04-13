@@ -29,6 +29,7 @@ Copyright (c):
 #include <quad.h>
 #include <GameTime.h>
 #include <GameInput.h>
+#include <SceneManager.h>
 
 #include <fstream>
 #include <sstream>
@@ -69,6 +70,7 @@ glm::vec3 light_pos;
 
 GameTime* gTime;
 GameInput* gInput;
+SceneManager* sm;
 
 //This function is used to read the shader programs. OpenGL does not read them as a
 //specific file type, but instead as simply a text file containing c code. 
@@ -157,7 +159,12 @@ GLuint LoadShaders(std::string shaderName) {
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	gInput->keyCallback(window, key, scancode, action, mods);
-
+	if (gInput->getKey(GLFW_KEY_UP)) {
+		sm->changeScene(true);
+	}
+	if (gInput->getKey(GLFW_KEY_DOWN)) {
+		sm->changeScene(false);
+	}
 }
 
 float testvarA = 0.0f;
@@ -171,26 +178,20 @@ void applyKeyboardInput() {
 
 	// View control
 	float rot_factor(glm::pi<float>() / 180);
-	float trans_factor = 200 * gTime->getDelta(); //0.25 units per second
+	float trans_factor = FPSCamera::movementSpeed * gTime->getDelta(); //0.25 units per second
 	rot_factor *= 200;
 
-	if (gInput->getKey(GLFW_KEY_UP)) {
-		rayCamera->Pitch(rot_factor);
-	}
-	if (gInput->getKey(GLFW_KEY_DOWN)) {
-		rayCamera->Pitch(-rot_factor);
-	}
 	if (gInput->getKey(GLFW_KEY_LEFT)) {
-		rayCamera->Yaw(-rot_factor);
+		//rayCamera->Yaw(-rot_factor);
 	}
 	if (gInput->getKey(GLFW_KEY_RIGHT)) {
-		rayCamera->Yaw(rot_factor);
+		//rayCamera->Yaw(rot_factor);
 	}
 	if (gInput->getKey(GLFW_KEY_N)) {
-		rayCamera->Roll(-rot_factor);
+		//rayCamera->Roll(-rot_factor);
 	}
 	if (gInput->getKey(GLFW_KEY_M)) {
-		rayCamera->Roll(rot_factor);
+		//rayCamera->Roll(rot_factor);
 	}
 	if (gInput->getKey(GLFW_KEY_W)) {
 		rayCamera->MoveForward(trans_factor);
@@ -218,6 +219,13 @@ void applyKeyboardInput() {
 	if (gInput->getKey(GLFW_KEY_P)) {
 		testvarA += 0.1f;
 		std::cout << testvarA << std::endl;
+	}
+
+	if (gInput->getKey(GLFW_KEY_H)) {
+		sm->switchToScene(SCENE_INFINITE_SPHERES);
+	}
+	if (gInput->getKey(GLFW_KEY_J)) {
+		sm->switchToScene(SCENE_SIERPINSKY);
 	}
 
 }
@@ -556,6 +564,9 @@ int main(void) {
 		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
+
+		sm = new SceneManager(&marchShader);
+		//sm->switchToScene(SCENE_SIERPINSKY);
 		
 		// Create screen
 		Geometry* square = (Geometry*) new Quad();
@@ -573,7 +584,7 @@ int main(void) {
 		glm::quat orientation = glm::angleAxis(0.0f, glm::vec3(0.0, 1.0, 0.0));
 		glm::vec3 scale = glm::vec3(1);
 		glm::vec3 translation = glm::vec3(0.0);
-		light_pos = glm::vec3(1, -5, 4);
+		light_pos = glm::vec3(1, -25, 4);
 
 		gTime = new GameTime();
 
@@ -587,6 +598,9 @@ int main(void) {
 			glClearColor(background[0],background[1],background[2], 0.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			//light_pos = rayCamera->GetPosition();
+			sm->updateUniforms();
+
 			RenderQuadScreen(square, marchShader, translation, scale, orientation);
 			//Render(sphere, textureShader, glm::vec3(0.5,0,0), scale*(float)2, orientation, texture2);
 
@@ -594,7 +608,7 @@ int main(void) {
 			applyKeyboardInput();
 			glfwSwapBuffers(window);
 
-			std::cout << "FPS: " << gTime->getFPS() << std::endl;
+			//std::cout << "FPS: " << gTime->getFPS() << std::endl;
 		}
 	}
 	catch (std::exception &e) {

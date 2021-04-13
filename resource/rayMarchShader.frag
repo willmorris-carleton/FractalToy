@@ -15,6 +15,17 @@ uniform mat4 view_mat;
 uniform mat4 world_mat;
 uniform vec3 lightPos;
 
+uniform int sceneID = 0;
+uniform vec3 objectHitCol = vec3(1,0.9,0.63);
+uniform vec3 bgColor = vec3(0.53,0.81,0.92);
+uniform vec3 glow = vec3(1,1,1);
+uniform bool SHADOWS_ENABLED = true;
+uniform bool GLOW_ENABLED = true;
+uniform bool FOG_ENABLED = true;
+uniform float maxDistance = 1000.f;
+uniform float minFogDistance = 25.f; //Distance where fog starts setting in
+uniform int glowSteps = 5; //Min marching steps where glow is applied
+
 uniform vec3 ambient_color =  vec3(0.4,0.4,0.4);
 uniform vec3 diffuse_color =  vec3(0.75,0.75,0.75);
 uniform vec3 specular_color = vec3(0.8,0.8,0.8);
@@ -27,7 +38,7 @@ uniform float testvarA;
 
 vec3 rayMarch(vec3 start, vec3 ray);
 
-vec3 SpherePos = vec3(-1,3,0);
+vec3 SpherePos = vec3(0,0,0);
 
 
 uniform vec3 camPos = vec3(0, 0, 4);
@@ -38,7 +49,7 @@ vec3 ray;
 
 void main(void)
 {
-    SpherePos = vec3(sin(f_time) + 1, -3, 0);
+    //SpherePos = vec3(sin(f_time) + 1, -3, 0);
     vec2 pixelPosOnScreen = f_uv.xy*2 - 1.0;
 
     // Camera setup.
@@ -98,7 +109,6 @@ vec3 fold(vec3 p, vec3 n, float d) {
 
 // --------------------------------------------------------------
 
-const vec3 objectHitCol = vec3(1,0.9,0.63);
 const float SphereRadius = 1;
 
 float distanceToSphere(vec3 point) {
@@ -182,8 +192,8 @@ float distanceToCross(vec3 p) {
 float distanceToMenger(vec3 p) {
     float d = distanceToCube(p,vec3(1.0));
 
-   float s = 1.0;
-   for( int m=0; m<2; m++ )
+   float s = sin(f_time)*1.5 + 3;
+   for( int m=0; m<int(testvarA)+2; m++ )
    {
       vec3 a = mod( p*s, 2.0 )-1.0;
       s *= 3.0;
@@ -197,9 +207,15 @@ float distanceToMenger(vec3 p) {
 }
 
 float distanceToClosestObject(vec3 p) {
-    float c = 10000;// sin(f_time)*5 + 10;
-    vec3 point = mod(p+0.5*c, c) -0.5*c;
-    return distanceToSierpiensky(point);
+    
+    
+    if (sceneID == 0) {
+        float c = 10;// sin(f_time)*5 + 10;
+        vec3 point = mod(p+0.5*c, c) -0.5*c;
+        return distanceToSphere(point);
+    }
+    if (sceneID == 1) return distanceToSierpiensky(p);
+    if (sceneID == 2) return distanceToMenger(translate(p, vec3(0,-100,0))/100)*100;
 
 }
 
@@ -213,8 +229,6 @@ vec3 estimateNormal(vec3 point) {
 					 k.yxy*distanceToClosestObject((p + k.yxyz*dx).xyz) +
 					 k.xxx*distanceToClosestObject((p + k.xxxz*dx).xyz));
 }
-
-const bool SHADOWS_ENABLED = true;
 
 bool lightRayMarch(vec3 start, vec3 ray);
 
@@ -249,16 +263,9 @@ vec3 calculateLighting(vec3 point) {
 	
 }
 
-const bool GLOW_ENABLED = true;
-const bool FOG_ENABLED = true;
 
-const vec3 bgColor = vec3(0.53,0.81,0.92);
-const vec3 glow = vec3(1,1,1);
-const float maxDistance = 1000.f;
+const int maxMarchingSteps = 200;
 const float minDistance = 0.001f;
-const float fogDistance = 25.f; //Distance where fog starts setting in
-const int glowSteps = 5; //Min marching steps where glow is applied
-const int maxMarchingSteps = 100;
 
 vec3 addGlowCol(vec3 col, int curStep) {
     if (curStep < glowSteps) return col;
@@ -269,8 +276,8 @@ vec3 addGlowCol(vec3 col, int curStep) {
 }
 
 vec3 addFogCol(vec3 col, float currentDistance) {
-    if (currentDistance < fogDistance) return col;
-    float fogPercentage = (currentDistance-fogDistance)/(maxDistance-fogDistance);
+    if (currentDistance < minFogDistance) return col;
+    float fogPercentage = (currentDistance-minFogDistance)/(maxDistance-minFogDistance);
     return mix(col, bgColor, fogPercentage); 
 }
 
@@ -341,7 +348,6 @@ vec3 rayMarch(vec3 start, vec3 ray) {
     //Ray did not hit a object
     vec3 col = bgColor;
     if (GLOW_ENABLED) col = addGlowCol(col, curStep);
-    //if (FOG_ENABLED) col = addFogCol(col, currentDistance);
     return col;
 }
 // --------------------------------------------------------------

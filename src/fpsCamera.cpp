@@ -2,6 +2,13 @@
 #include <iostream>
 
 glm::vec3 FPSCamera::WorldUp = glm::vec3(0, 1, 0);
+float FPSCamera::movementSpeed = 20.f;
+Camera* FPSCamera::currentCam = nullptr;
+
+FPSCamera::FPSCamera() : Camera()
+{
+	currentCam = this;
+}
 
 int FPSCamera::Pitch(float angleDeg)
 {

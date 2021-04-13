@@ -12,10 +12,14 @@ Description:
 class FPSCamera : public Camera {
 
 public:
+	FPSCamera();
 	virtual int Pitch(float angleDeg);
 	virtual int Yaw(float angleDeg);
 	
 	static glm::vec3 WorldUp;
+	static Camera* currentCam;
+
+	static float movementSpeed;
 
 private:
 	float curPitch = 0;

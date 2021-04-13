@@ -28,6 +28,8 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/src/fpsCamera.cpp
     ${PROJECT_SOURCE_DIR}/src/GameTime.cpp
     ${PROJECT_SOURCE_DIR}/src/GameInput.cpp
+    ${PROJECT_SOURCE_DIR}/src/Scene.cpp
+    ${PROJECT_SOURCE_DIR}/src/SceneManager.cpp
 
     ${PROJECT_SOURCE_DIR}/include/camera.h
     ${PROJECT_SOURCE_DIR}/include/geometry.h
@@ -35,6 +37,8 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/include/fpsCamera.h
     ${PROJECT_SOURCE_DIR}/include/GameTime.h
     ${PROJECT_SOURCE_DIR}/include/GameInput.h
+    ${PROJECT_SOURCE_DIR}/include/Scene.h
+    ${PROJECT_SOURCE_DIR}/include/SceneManager.h
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
