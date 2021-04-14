@@ -535,6 +535,10 @@ int main(void) {
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 		#endif
 
+		//Anti Aliasing
+		glfwWindowHint(GLFW_SAMPLES, 4);
+		glEnable(GL_MULTISAMPLE);
+
 		// Create a window and its OpenGL context
 		window = glfwCreateWindow(window_width_g, window_height_g, window_title_g.c_str(), NULL, NULL);
 		if (!window) {
@@ -579,6 +583,7 @@ int main(void) {
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPosCallback(window, mouseCallback);
+		
 
 		//Define the three transformation attributes
 		glm::quat orientation = glm::angleAxis(0.0f, glm::vec3(0.0, 1.0, 0.0));
@@ -608,7 +613,7 @@ int main(void) {
 			applyKeyboardInput();
 			glfwSwapBuffers(window);
 
-			//std::cout << "FPS: " << gTime->getFPS() << std::endl;
+			std::cout << "FPS: " << GameTime::gt->getFPS() << std::endl;
 		}
 	}
 	catch (std::exception &e) {

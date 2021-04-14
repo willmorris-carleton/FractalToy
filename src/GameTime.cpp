@@ -1,7 +1,10 @@
 #include <GameTime.h>
 
+GameTime* GameTime::gt = nullptr;
+
 GameTime::GameTime() {
 	update();
+	GameTime::gt = this;
 }
 
 void GameTime::update() {
@@ -10,7 +13,7 @@ void GameTime::update() {
 
 float GameTime::getDelta()
 {
-	return glfwGetTime() - lastTime;;
+	return glfwGetTime() - lastTime;
 }
 
 int GameTime::getFPS()

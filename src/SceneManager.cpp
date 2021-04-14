@@ -8,11 +8,15 @@ SceneManager::SceneManager(GLuint* shader) : shader(shader), currentScene(0)
 	spheres->renderDistance = 200.f;
 	spheres->shadows = false;
 	spheres->glow = false;
+	spheres->defaultObjectColor = glm::vec3(0, .5, 0);
+	spheres->randomColorMode = true;
 	scenes.push_back(spheres);
 
 	Scene* sierpinsky = new Scene(SCENE_SIERPINSKY);
 	sierpinsky->movementSpeed = 200.f;
 	sierpinsky->renderDistance = 1500.f;
+	sierpinsky->autoCameraOn = true;
+	sierpinsky->cameraDistance = 1000.f;
 	//sierpinsky->backgroundColor = glm::vec3(1,0,0);
 	scenes.push_back(sierpinsky);
 

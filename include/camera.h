@@ -28,7 +28,7 @@ public:
 	Camera(void);
 	~Camera(void);
 
-	//TO DO: Complete the following functions------
+	int RotateAroundAxis(float angleDeg, glm::vec3 inAxis);
 	int Roll(float angleDeg);
 	virtual int Pitch(float angleDeg);
 	virtual int Yaw(float angleDeg);

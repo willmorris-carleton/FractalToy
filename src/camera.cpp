@@ -16,7 +16,15 @@ Camera::~Camera(void) {
 }
 
 
-//TO DO---------
+int Camera::RotateAroundAxis(float angleDeg, glm::vec3 inAxis) {
+	glm::quat rotation = glm::angleAxis(glm::radians(angleDeg), inAxis);
+	orientation_ *= rotation;
+	orientation_ = glm::normalize(orientation_);
+
+	//DO NOT remove the line below:
+	viewMat = glm::lookAt(position, position + forwardVector, upVector);
+	return 0;
+}
 
 int Camera::Roll(float angleDeg) {
 	glm::quat rotation = glm::angleAxis(glm::radians(angleDeg), GetForward());
@@ -146,6 +154,7 @@ void Camera::SetCamera(glm::vec3 position, glm::vec3 lookAtPoint, glm::vec3 upVe
 	this->upVector = upVector;
 	this->upVector = glm::normalize(this->upVector);
 	this->forwardVector = glm::normalize(this->forwardVector);
+	orientation_ = glm::quat();
 
 	viewMat = glm::lookAt(position, position + forwardVector, upVector);
 

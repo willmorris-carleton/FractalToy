@@ -17,6 +17,7 @@ public:
 	float getDelta();
 	int getFPS();
 
+	static GameTime* gt;
 private:
 	float lastTime;
 

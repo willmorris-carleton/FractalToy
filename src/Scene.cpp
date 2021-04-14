@@ -7,8 +7,15 @@ void Scene::changeToScene(GLuint shader)
 {
 
 	//DEFAULT CAMERA SETTINGS
-	FPSCamera::currentCam->SetCamera(startingPos, startingLookAt, FPSCamera::WorldUp);
-	FPSCamera::movementSpeed = movementSpeed;
+	if (!autoCameraOn) {
+		FPSCamera::currentCam->SetCamera(startingPos, startingLookAt, FPSCamera::WorldUp);
+		FPSCamera::movementSpeed = movementSpeed;
+	}
+	else {
+		FPSCamera::currentCam->SetCamera(glm::normalize(startingPos)* cameraDistance, startingPos, FPSCamera::WorldUp);
+		FPSCamera::movementSpeed = movementSpeed;
+	}
+	
 
 	updateUniforms(shader);
 
@@ -16,12 +23,27 @@ void Scene::changeToScene(GLuint shader)
 
 void Scene::updateUniforms(GLuint shader)
 {
+	if (autoCameraOn) {
+		float distanceFromOrigin = glm::length(FPSCamera::currentCam->GetPosition());
+		FPSCamera::currentCam->MoveForward(distanceFromOrigin);
+		FPSCamera::currentCam->RotateAroundAxis(anglePerSecond*GameTime::gt->getDelta(), rotAxis);
+		FPSCamera::currentCam->MoveBackward(distanceFromOrigin);
+
+		//std::cout << anglePerSecond * GameTime::gt->getDelta() << std::endl;
+	}
+
 	//DEFAULT SCENE OPTIONS
 	GLint u_var = glGetUniformLocation(shader, "bgColor");
 	glUniform3fv(u_var, 1, glm::value_ptr(backgroundColor));
 
 	u_var = glGetUniformLocation(shader, "objectHitCol");
-	glUniform3fv(u_var, 1, glm::value_ptr(defaultObjectColor));
+	if (randomColorMode) {
+		glm::vec3 s = glm::vec3(cos(glfwGetTime()) + 1, sin(glfwGetTime()) + 1, -sin(glfwGetTime()) + 1);
+		glUniform3fv(u_var, 1, glm::value_ptr(s));
+	}
+	else {
+		glUniform3fv(u_var, 1, glm::value_ptr(defaultObjectColor));
+	}
 
 	u_var = glGetUniformLocation(shader, "ambient_color");
 	glUniform3fv(u_var, 1, glm::value_ptr(ambient_color));
