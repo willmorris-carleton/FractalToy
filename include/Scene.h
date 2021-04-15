@@ -29,7 +29,7 @@ public:
 	//AUTO CAMERA SETTINGS
 	bool autoCameraOn = false;
 	float cameraDistance = 10.f;
-	float anglePerSecond = 10000.f;
+	float anglePerSecond = 10.f;
 	glm::vec3 rotAxis = FPSCamera::WorldUp;
 
 

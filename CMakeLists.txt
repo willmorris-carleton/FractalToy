@@ -30,6 +30,7 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/src/GameInput.cpp
     ${PROJECT_SOURCE_DIR}/src/Scene.cpp
     ${PROJECT_SOURCE_DIR}/src/SceneManager.cpp
+    ${PROJECT_SOURCE_DIR}/src/TextRenderer.cpp
 
     ${PROJECT_SOURCE_DIR}/include/camera.h
     ${PROJECT_SOURCE_DIR}/include/geometry.h
@@ -39,11 +40,14 @@ set(SRCS
     ${PROJECT_SOURCE_DIR}/include/GameInput.h
     ${PROJECT_SOURCE_DIR}/include/Scene.h
     ${PROJECT_SOURCE_DIR}/include/SceneManager.h
+    ${PROJECT_SOURCE_DIR}/include/TextRenderer.h
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
     ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.frag
     ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.vert
+    ${PROJECT_SOURCE_DIR}/resource/textShader.frag
+    ${PROJECT_SOURCE_DIR}/resource/textShader.vert
 )
 
 # Add executable based on the source files

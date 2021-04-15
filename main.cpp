@@ -30,6 +30,7 @@ Copyright (c):
 #include <GameTime.h>
 #include <GameInput.h>
 #include <SceneManager.h>
+#include <TextRenderer.h>
 
 #include <fstream>
 #include <sstream>
@@ -71,6 +72,7 @@ glm::vec3 light_pos;
 GameTime* gTime;
 GameInput* gInput;
 SceneManager* sm;
+TextRenderer* textRenderer;
 
 //This function is used to read the shader programs. OpenGL does not read them as a
 //specific file type, but instead as simply a text file containing c code. 
@@ -561,6 +563,9 @@ int main(void) {
 		glDepthFunc(GL_LESS);
 		glDisable(GL_CULL_FACE);
 
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		camera = new Camera();
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
@@ -568,14 +573,17 @@ int main(void) {
 		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
+		GLuint textShader = LoadShaders("textShader");
 
 		sm = new SceneManager(&marchShader);
 		//sm->switchToScene(SCENE_SIERPINSKY);
 		
 		// Create screen
 		Geometry* square = (Geometry*) new Quad();
+		GLuint textTexture = LoadTexture("FontSheet.bmp");
 
 		gInput = new GameInput();
+		textRenderer = new TextRenderer(&textShader, square, &textTexture, camera);
 
 		//Set the proper callbacks. 
 		glfwSetWindowUserPointer(window, (void *)&projection_matrix);
@@ -603,10 +611,16 @@ int main(void) {
 			glClearColor(background[0],background[1],background[2], 0.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			
+			textRenderer->RenderTexts();
+			
 			//light_pos = rayCamera->GetPosition();
-			sm->updateUniforms();
-
 			RenderQuadScreen(square, marchShader, translation, scale, orientation);
+			sm->updateUniforms();
+			
+
+			
+			
 			//Render(sphere, textureShader, glm::vec3(0.5,0,0), scale*(float)2, orientation, texture2);
 
 			glfwPollEvents();

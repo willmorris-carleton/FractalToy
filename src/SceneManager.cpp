@@ -14,17 +14,19 @@ SceneManager::SceneManager(GLuint* shader) : shader(shader), currentScene(0)
 
 	Scene* sierpinsky = new Scene(SCENE_SIERPINSKY);
 	sierpinsky->movementSpeed = 200.f;
-	sierpinsky->renderDistance = 1500.f;
+	sierpinsky->renderDistance = 1800.f;
 	sierpinsky->autoCameraOn = true;
-	sierpinsky->cameraDistance = 1000.f;
-	//sierpinsky->backgroundColor = glm::vec3(1,0,0);
+	sierpinsky->startingPos = glm::vec3(5,0,5);
+	sierpinsky->startingLookAt = glm::vec3(0,0,0);
+	sierpinsky->cameraDistance = 1200.f;
+	sierpinsky->backgroundColor = glm::vec3(0.2,0.6,0.2);
 	scenes.push_back(sierpinsky);
 
 	Scene* menger = new Scene(SCENE_MENGER);
 	menger->glow = true;
 	menger->movementSpeed = 30;
-	menger->startingPos = glm::vec3(0,-3,4);
-	menger->startingLookAt = glm::vec3(0,-3,0);
+	menger->startingPos = glm::vec3(200,50,200);
+	menger->startingLookAt = glm::vec3(0,125,0);
 	menger->backgroundColor = glm::vec3(0.3,0,0);
 	menger->defaultObjectColor = glm::vec3(0.7,0,0);
 	menger->ambient_color = glm::vec3(0.6,0.6,0.6);
