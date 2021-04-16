@@ -12,6 +12,7 @@ Description:
 #define SCENE_SIERPINSKY 1
 #define SCENE_MENGER 2
 #define SCENE_MANDELBROT 3
+#define SCENE_BLOB 4
 
 
 class SceneManager {

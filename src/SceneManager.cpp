@@ -16,6 +16,7 @@ SceneManager::SceneManager(GLuint* shader) : shader(shader), currentScene(0)
 	Scene* sierpinsky = new Scene(SCENE_SIERPINSKY);
 	sierpinsky->movementSpeed = 200.f;
 	sierpinsky->renderDistance = 1800.f;
+	sierpinsky->anglePerSecond = 2.5;
 	sierpinsky->autoCameraOn = true;
 	sierpinsky->startingPos = glm::vec3(5,0,5);
 	sierpinsky->startingLookAt = glm::vec3(0,0,0);
@@ -45,6 +46,14 @@ SceneManager::SceneManager(GLuint* shader) : shader(shader), currentScene(0)
 	mandel->specular_color = glm::vec3(0.1);
 	mandel->sceneName = "mandelbrot";
 	scenes.push_back(mandel);
+
+	Scene* blob = new Scene(SCENE_BLOB);
+	blob->sceneName = "blob";
+	blob->randomColorMode = true;
+	blob->ambientOcclusion = false;
+	//blob->shadows = false;
+	blob->startingPos = glm::vec3(-4, 0, 4);
+	scenes.push_back(blob);
 }
 
 SceneManager::~SceneManager()

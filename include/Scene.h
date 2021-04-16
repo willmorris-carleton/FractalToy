@@ -1,7 +1,7 @@
 /*
 Description:
 	Contains information regarding a scene which user can look at. Each scene has different,
-	fractals and settings
+	fractals and settings which can be changed at any time.
 */
 #ifndef SCENE_H_
 #define SCENE_H_

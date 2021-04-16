@@ -44,8 +44,6 @@ set(SRCS
 	
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/rayMarchShader.frag
-    ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.frag
-    ${PROJECT_SOURCE_DIR}/resource/infiniteRayMarchShader.vert
     ${PROJECT_SOURCE_DIR}/resource/textShader.frag
     ${PROJECT_SOURCE_DIR}/resource/textShader.vert
 )

@@ -1,6 +1,6 @@
 /*
 Description:
-	Renders text
+	Class responsible for rendering text using text sprite sheet texture.
 */
 #ifndef TEXTRENDERER_H
 #define TEXTRENDERER_H

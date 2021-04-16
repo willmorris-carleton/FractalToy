@@ -88,6 +88,8 @@ void TextRenderer::RenderTexts()
 		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
 		glm::mat4 transf = translationMatrix * scaleMatrix;
 
+		glm::vec4 color = glm::vec4(textObjs[tIndex].color.x, textObjs[tIndex].color.y, textObjs[tIndex].color.z, 1);
+
 		for (int i = 0; i < s.length(); i++) {
 
 			translationMatrix = glm::translate(translationMatrix, glm::vec3(scale.x / 1.15, 0, 0));
@@ -110,6 +112,9 @@ void TextRenderer::RenderTexts()
 
 			GLint textY = glGetUniformLocation(shader, "textY");
 			glUniform1f(textY, getGetYUV(s[i]));
+
+			GLint c = glGetUniformLocation(shader, "textColor");
+			glUniform4fv(c, 1, glm::value_ptr(color));
  
 			glDrawElements(GL_TRIANGLES, geom->size, GL_UNSIGNED_INT, 0);
 		}

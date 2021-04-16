@@ -6,13 +6,6 @@ in float f_time;
 
 out vec4 fragColor;
 
-uniform sampler2D texture_map;
-uniform sampler2D second_texture_map;
-
-uniform vec3 quadPos;
-uniform mat4 projection_mat;
-uniform mat4 view_mat;
-uniform mat4 world_mat;
 uniform vec3 lightPos;
 
 uniform int sceneID = 0;
@@ -41,7 +34,6 @@ vec3 rayMarch(vec3 start, vec3 ray);
 
 vec3 SpherePos = vec3(0,0,0);
 
-
 uniform vec3 camPos = vec3(0, 0, 4);
 uniform vec3 cameraUp = vec3(0,1,0);
 uniform vec3 cameraLookAt = vec3(0,0,0);
@@ -50,7 +42,6 @@ vec3 ray;
 
 void main(void)
 {
-    //SpherePos = vec3(sin(f_time) + 1, -3, 0);
     vec2 pixelPosOnScreen = f_uv.xy*2 - 1.0;
 
     // Camera setup.
@@ -58,7 +49,6 @@ void main(void)
     vec3 newUp =normalize(cross(cameraUp,direction));
     vec3 right =cross(direction,newUp);
     vec3 screenPos=(camPos+direction);
-    //vec3 scrCoord=vcv+vPos.x*u*resolution.x/resolution.y+vPos.y*v;
     vec3 scrCoord=screenPos+pixelPosOnScreen.x*newUp*0.8+pixelPosOnScreen.y*right*0.8;
     ray=normalize(scrCoord-camPos);
 
@@ -70,7 +60,7 @@ void main(void)
 }
 
 // --------------------------------------------------------------
-//MATH HELPER FUNCTIONS
+//OBJECT MANIPULATION HELPER FUNCTIONS
 float intersect(float distA, float distB) {
     return max(distA, distB);
 }
@@ -83,17 +73,17 @@ float difference(float distA, float distB) {
     return max(distA, -distB);
 }
 
-float opSmoothUnion( float d1, float d2, float k ) {
+float smoothUnion( float d1, float d2, float k ) {
     float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
     return mix( d2, d1, h ) - k*h*(1.0-h); 
 }
 
-float opSmoothSubtraction( float d1, float d2, float k ) {
+float smoothSubtraction( float d1, float d2, float k ) {
     float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
     return mix( d2, -d1, h ) + k*h*(1.0-h); 
 }
 
-float opSmoothIntersection( float d1, float d2, float k ) {
+float smoothIntersection( float d1, float d2, float k ) {
     float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
     return mix( d2, d1, h ) + k*h*(1.0-h); 
 }
@@ -107,7 +97,6 @@ vec3 translate(vec3 point, vec3 trans)
 vec3 fold(vec3 p, vec3 n, float d) {
     return p-2*n*min(0,dot(p,n)-d);
 }
-
 // --------------------------------------------------------------
 
 const float SphereRadius = 1;
@@ -207,17 +196,33 @@ float distanceToMenger(vec3 p) {
    return d;
 }
 
-float distanceToClosestObject(vec3 p) {
-    
+float distanceToBlob(vec3 p) {
+    float d = sin(4.5 * p.x * sin(f_time)) * sin(4.5 * p.y* sin(f_time)) * sin(4.5 * p.z* -sin(f_time)) * 0.25;
+    float orbDist = sin(f_time)*2 + 1;
+    float df = smoothUnion(distanceToSphere(p + d), distanceToSphere((translate(p, vec3(sin(f_time),0,cos(f_time))*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(cos(f_time),0,sin(f_time))*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(cos(f_time),sin(f_time),sin(f_time))*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(cos(f_time),cos(f_time),sin(f_time))*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(cos(f_time),-cos(f_time),-sin(f_time))*orbDist) - d)/0.25)*0.25, 0.5);
+    orbDist = -sin(f_time)*0.5 + 1;
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(1,1,-1)*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(1,-1,1)*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(0,1,0)*orbDist) - d)/0.25)*0.25, 0.5);
+    df = smoothUnion(df, distanceToSphere((translate(p, vec3(-1,1,1)*orbDist) - d)/0.25)*0.25, 0.5);
+    return df;
+}
+
+
+float distanceToClosestObject(vec3 p) {    
     
     if (sceneID == 0) {
-        float c = 10;// sin(f_time)*5 + 10;
-        vec3 point = mod(p+0.5*c, c) -0.5*c;
+        vec3 point = mod(p+0.5*10, 10) -0.5*10; //Repeat object every 10 units
         return distanceToSphere(point);
     }
     if (sceneID == 1) return distanceToSierpiensky(p);
-    if (sceneID == 2) return distanceToMenger(translate(p, vec3(0,-100,0))/100)*100;
+    if (sceneID == 2) return distanceToMenger(translate(p, vec3(0,-100,0))/100)*100; //Scale object by 100 and shift down 100 units
     if (sceneID == 3) return distanceToM(p);
+    if (sceneID == 4) return distanceToBlob(p);
 
 }
 
@@ -225,7 +230,7 @@ const float dx = 0.001;
 const float backStep = 0.01f;
 const vec3 k = vec3(1,-1,0);
 vec3 estimateNormal(vec3 point) {
-    vec4 p = vec4(point-ray*backStep, 1);
+    vec4 p = vec4(point-ray*backStep, 1);//Step back a little before getting normal to fix small lighting issues
 	return normalize(k.xyy*distanceToClosestObject((p + k.xyyz*dx).xyz) +
 					 k.yyx*distanceToClosestObject((p + k.yyxz*dx).xyz) +
 					 k.yxy*distanceToClosestObject((p + k.yxyz*dx).xyz) +
@@ -244,6 +249,45 @@ vec3 calculateLighting(vec3 point) {
 
     //the default color. 
 	vec4 color  = vec4(objectHitCol,1.0);
+
+	vec3 ambient, diffuse, specular;
+	
+    bool inShadow = false;
+    vec2 lightMarch;
+    if (SHADOWS_ENABLED) {
+        lightMarch = lightRayMarch(point, L);
+        inShadow = lightMarch.x == 1 ? true : false;
+    }
+
+	//ambient----------------------------------------
+	if (SHADOWS_ENABLED && AMBIENT_OCCLUSION_ENABLED) {
+        float occlusionP = 1 - (lightMarch.y / maxMarchingSteps);
+        ambient = coefA * ambient_color * occlusionP;
+    }
+    else ambient = coefA * ambient_color;
+
+	//diffuse----------------------------------------
+    if (!inShadow) diffuse = coefD * diffuse_color * max(dot(L, N), 0.f);
+	else diffuse = vec3(0);
+
+	//specular----------------------------------------
+	if (!inShadow) specular = coefS * specular_color * pow(max(dot(R, V), 0.f), shine);
+    else specular = vec3(0);
+
+	color.rgb *= (ambient+diffuse+specular);
+	return color.rgb;
+	
+}
+
+vec3 calculateBlobLighting(vec3 point) {
+
+	vec3 N = estimateNormal(point);
+	vec3 L = normalize(lightPos - point);
+	vec3 V = normalize(camPos - point);
+	vec3 R = normalize(reflect(-L, N));
+
+    //the default color. 
+	vec4 color  = vec4(normalize(-point),1);
 
 	vec3 ambient, diffuse, specular;
 	
@@ -334,7 +378,7 @@ vec3 rayMarch(vec3 start, vec3 ray) {
         //Collision!
         if (de <= minDistance) {
 
-            vec3 col = calculateLighting(currentPos);
+            vec3 col = (sceneID == 4) ? calculateBlobLighting(currentPos) : calculateLighting(currentPos);
 
             //Apply effects
             if (GLOW_ENABLED) col = addGlowCol(col, curStep);

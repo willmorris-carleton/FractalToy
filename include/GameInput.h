@@ -1,6 +1,6 @@
 /*
 Description:
-	Contains the geometry vertex attributes for each shape.
+	Class to keep track of which inputs are currently down at the same time.
 */
 #ifndef GAMEINPUT_H_
 #define GAMEINPUT_H_
@@ -8,8 +8,6 @@ Description:
 #include <GL/glfw3.h>
 #include <map>
 
-//The geometry class contains the vertex attributes, the type
-// and the name of the shape to create
 class GameInput {
 
 public:

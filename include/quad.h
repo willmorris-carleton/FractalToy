@@ -1,6 +1,6 @@
 /*
 Description:
-	Contains a quad shape
+	Contains a quad shape. Will be used as screen for raymarching but also to render text.
 */
 #ifndef QUADG_H
 #define QUADG_H

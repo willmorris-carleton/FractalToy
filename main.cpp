@@ -157,20 +157,32 @@ GLuint LoadShaders(std::string shaderName) {
 
 }
 
+float testvarA = 0.0f;
+
 // Callback for when a key is pressed
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	gInput->keyCallback(window, key, scancode, action, mods);
+
+	//Only when key is pressed check these
 	if (gInput->getKey(GLFW_KEY_UP)) {
 		sm->changeScene(true);
 	}
 	if (gInput->getKey(GLFW_KEY_DOWN)) {
 		sm->changeScene(false);
 	}
+	if (gInput->getKey(GLFW_KEY_O)) {
+		testvarA -= 1;
+		std::cout << testvarA << std::endl;
+	}
+	if (gInput->getKey(GLFW_KEY_P)) {
+		testvarA += 1;
+		std::cout << testvarA << std::endl;
+	}
 }
 
-float testvarA = 0.0f;
 
+//Checked every frame
 void applyKeyboardInput() {
 
 	// Quit the program when pressing 'q'
@@ -212,15 +224,6 @@ void applyKeyboardInput() {
 	}
 	if (gInput->getKey(GLFW_KEY_LEFT_CONTROL)) {
 		rayCamera->MoveDown(-trans_factor);
-	}
-
-	if (gInput->getKey(GLFW_KEY_O)) {
-		testvarA -= 0.1f;
-		std::cout << testvarA << std::endl;
-	}
-	if (gInput->getKey(GLFW_KEY_P)) {
-		testvarA += 0.1f;
-		std::cout << testvarA << std::endl;
 	}
 
 	if (gInput->getKey(GLFW_KEY_H)) {
@@ -537,7 +540,7 @@ int main(void) {
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 		#endif
 
-		//Anti Aliasing
+		//Basic Anti Aliasing (Comment out for better performance)
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		glEnable(GL_MULTISAMPLE);
 
@@ -563,11 +566,14 @@ int main(void) {
 		glDepthFunc(GL_LESS);
 		glDisable(GL_CULL_FACE);
 
+		//Camera for rendering quad and text
 		camera = new Camera();
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
+		//Camera for raymarching
 		rayCamera = (Camera* ) new FPSCamera();
 		rayCamera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		
 		//Load the shaders
 		GLuint marchShader = LoadShaders("rayMarchShader");
 		GLuint textShader = LoadShaders("textShader");
@@ -595,7 +601,10 @@ int main(void) {
 		glm::vec3 translation = glm::vec3(0.0);
 		light_pos = glm::vec3(1, -25, 4);
 
+		//Initialize time
 		gTime = new GameTime();
+
+		//Set start scene
 		sm->switchToScene(SCENE_INFINITE_SPHERES);
 
 		PrintOpenGLInfo();
@@ -608,7 +617,7 @@ int main(void) {
 			glClearColor(background[0],background[1],background[2], 0.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			
+			//Render the texts
 			textRenderer->RenderTexts();
 			
 			//light_pos = rayCamera->GetPosition();
