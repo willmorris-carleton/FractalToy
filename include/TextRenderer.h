@@ -27,7 +27,8 @@ Description:
 struct TextObj {
 	std::string text;
 	glm::vec3 color;
-	glm::vec2 size;
+	glm::vec3 size;
+	glm::vec2 loc;
 };
 
 class TextRenderer {
@@ -36,7 +37,7 @@ public:
 	TextRenderer(GLuint* shader, Geometry* quad, GLuint* texture, Camera* cam);
 	~TextRenderer();
 	void RenderTexts();
-	void addTextObj(TextObj* to);
+	void addTextObj(TextObj to);
 	void clearTexts();
 
 	static TextRenderer* tR;
@@ -45,7 +46,7 @@ private:
 	float getGetXUV(char c);
 	float getGetYUV(char c);
 
-	std::vector<TextObj*> textObjs;
+	std::vector<TextObj> textObjs;
 	GLuint* tshader;
 	Geometry* quad;
 	GLuint* textTexture;

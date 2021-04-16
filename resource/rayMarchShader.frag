@@ -22,6 +22,7 @@ uniform vec3 glow = vec3(1,1,1);
 uniform bool SHADOWS_ENABLED = true;
 uniform bool GLOW_ENABLED = true;
 uniform bool FOG_ENABLED = true;
+uniform bool AMBIENT_OCCLUSION_ENABLED = true;
 uniform float maxDistance = 1000.f;
 uniform float minFogDistance = 25.f; //Distance where fog starts setting in
 uniform int glowSteps = 5; //Min marching steps where glow is applied
@@ -216,6 +217,7 @@ float distanceToClosestObject(vec3 p) {
     }
     if (sceneID == 1) return distanceToSierpiensky(p);
     if (sceneID == 2) return distanceToMenger(translate(p, vec3(0,-100,0))/100)*100;
+    if (sceneID == 3) return distanceToM(p);
 
 }
 
@@ -230,7 +232,8 @@ vec3 estimateNormal(vec3 point) {
 					 k.xxx*distanceToClosestObject((p + k.xxxz*dx).xyz));
 }
 
-bool lightRayMarch(vec3 start, vec3 ray);
+const int maxMarchingSteps = 200;
+vec2 lightRayMarch(vec3 start, vec3 ray);
 
 vec3 calculateLighting(vec3 point) {
 
@@ -245,10 +248,18 @@ vec3 calculateLighting(vec3 point) {
 	vec3 ambient, diffuse, specular;
 	
     bool inShadow = false;
-    if (SHADOWS_ENABLED) inShadow = lightRayMarch(point, L);
+    vec2 lightMarch;
+    if (SHADOWS_ENABLED) {
+        lightMarch = lightRayMarch(point, L);
+        inShadow = lightMarch.x == 1 ? true : false;
+    }
 
 	//ambient----------------------------------------
-	ambient = coefA * ambient_color;
+	if (SHADOWS_ENABLED && AMBIENT_OCCLUSION_ENABLED) {
+        float occlusionP = 1 - (lightMarch.y / maxMarchingSteps);
+        ambient = coefA * ambient_color * occlusionP;
+    }
+    else ambient = coefA * ambient_color;
 
 	//diffuse----------------------------------------
     if (!inShadow) diffuse = coefD * diffuse_color * max(dot(L, N), 0.f);
@@ -264,7 +275,6 @@ vec3 calculateLighting(vec3 point) {
 }
 
 
-const int maxMarchingSteps = 200;
 const float minDistance = 0.001f;
 
 vec3 addGlowCol(vec3 col, int curStep) {
@@ -281,7 +291,7 @@ vec3 addFogCol(vec3 col, float currentDistance) {
     return mix(col, bgColor, fogPercentage); 
 }
 
-bool lightRayMarch(vec3 start, vec3 ray) {
+vec2 lightRayMarch(vec3 start, vec3 ray) {
      float currentDistance = 0.1f;
      int curStep = 0;
      while (curStep < maxMarchingSteps) {
@@ -292,19 +302,19 @@ bool lightRayMarch(vec3 start, vec3 ray) {
         //Collision!
         if (de <= minDistance) {
 
-            return true;
+            return vec2(1, curStep);
         }
 
         //Gone too far
         if (currentDistance >= maxDistance) {
-            return false;
+            return vec2(0, curStep);
         }
 
         currentDistance += de;
         curStep++;
     }
 
-    return false;
+    return vec2(0, curStep);
 }
 
 //Returns colour 

@@ -563,9 +563,6 @@ int main(void) {
 		glDepthFunc(GL_LESS);
 		glDisable(GL_CULL_FACE);
 
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		camera = new Camera();
 		camera->SetCamera(glm::vec3(0, 0, 4), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
@@ -576,7 +573,6 @@ int main(void) {
 		GLuint textShader = LoadShaders("textShader");
 
 		sm = new SceneManager(&marchShader);
-		//sm->switchToScene(SCENE_SIERPINSKY);
 		
 		// Create screen
 		Geometry* square = (Geometry*) new Quad();
@@ -600,6 +596,7 @@ int main(void) {
 		light_pos = glm::vec3(1, -25, 4);
 
 		gTime = new GameTime();
+		sm->switchToScene(SCENE_INFINITE_SPHERES);
 
 		PrintOpenGLInfo();
 
@@ -617,11 +614,6 @@ int main(void) {
 			//light_pos = rayCamera->GetPosition();
 			RenderQuadScreen(square, marchShader, translation, scale, orientation);
 			sm->updateUniforms();
-			
-
-			
-			
-			//Render(sphere, textureShader, glm::vec3(0.5,0,0), scale*(float)2, orientation, texture2);
 
 			glfwPollEvents();
 			applyKeyboardInput();

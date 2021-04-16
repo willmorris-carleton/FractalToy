@@ -6,6 +6,6 @@
     "\\resource",
     "\\src"
   ],
-  "SelectedNode": "\\resource\\textShader.frag",
+  "SelectedNode": "\\resource\\rayMarchShader.frag",
   "PreviewInSolutionExplorer": false
 }

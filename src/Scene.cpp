@@ -19,6 +19,8 @@ void Scene::changeToScene(GLuint shader)
 
 	updateUniforms(shader);
 
+	updateTextRendering();
+
 }
 
 void Scene::updateUniforms(GLuint shader)
@@ -79,6 +81,28 @@ void Scene::updateUniforms(GLuint shader)
 	u_var = glGetUniformLocation(shader, "sceneID");
 	glUniform1i(u_var, sceneID);
 
+	u_var = glGetUniformLocation(shader, "AMBIENT_OCCLUSION_ENABLED");
+	glUniform1i(u_var, ambientOcclusion);
 }
 
+void Scene::updateTextRendering()
+{
+	TextRenderer::tR->clearTexts();
+
+	TextObj tO;
+
+	tO.color = glm::vec3(1, 0, 0);
+	tO.size = glm::vec3(0.5);
+	tO.loc = glm::vec2(-0.975, 0.925);
+	tO.text = sceneName;
+
+	TextRenderer::tR->addTextObj(tO);
+
+	tO.color = glm::vec3(1, 0, 0);
+	tO.size = glm::vec3(0.25);
+	tO.loc = glm::vec2(-0.875, 0.825);
+	tO.text = "rgb: " + std::to_string(defaultObjectColor.x) + " " + std::to_string(defaultObjectColor.y) + " " + std::to_string(defaultObjectColor.z);
+
+	TextRenderer::tR->addTextObj(tO);
+}
 

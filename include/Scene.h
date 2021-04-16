@@ -11,8 +11,10 @@ Description:
 #include <GL/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <string>
 #include <fpsCamera.h>
 #include <GameTime.h>
+#include <TextRenderer.h>
 
 class Scene {
 
@@ -48,14 +50,17 @@ public:
 	float fogStartDistance = 25.f;
 
 	bool glow = true;
-	float glowAmount = 0.1f; //Affects frequency of glow being added
+	float glowAmount = 0.1f; //Affects frequency of glow being added (number between 0 and 1)
 	glm::vec3 glowColor = glm::vec3(1, 1, 1);
 
 	bool shadows = true;
+	bool ambientOcclusion = true;
 
+	std::string sceneName = "empty name";
 
 private:
 	int sceneID; //ID used by shader to determine distance function
+	void updateTextRendering();
 	
 
 };

@@ -78,57 +78,54 @@ void TextRenderer::RenderTexts()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	float scale = 0.10;
-	std::string s = "hello ass";
+	//Render each text object
+	for (int tIndex = 0; tIndex < textObjs.size(); tIndex++) {
+		glm::vec3 scale = textObjs[tIndex].size * glm::vec3(0.10);
+		std::string s = textObjs[tIndex].text;
 
-	//Create the transform matrix
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-0.75, 0.75, 0.5));
-	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale));
-	glm::mat4 transf = translationMatrix * scaleMatrix;
+		//Create the transform matrix
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(textObjs[tIndex].loc.x + scale.x , textObjs[tIndex].loc.y - scale.y, 0.5));
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+		glm::mat4 transf = translationMatrix * scaleMatrix;
 
-	for (int i = 0; i < s.length(); i++) {
-		
+		for (int i = 0; i < s.length(); i++) {
 
-		//Load all the shader matricies into thier uniforms
-		GLint shader_mat = glGetUniformLocation(shader, "world_mat");
-		glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(transf));
+			translationMatrix = glm::translate(translationMatrix, glm::vec3(scale.x / 1.15, 0, 0));
+			transf = translationMatrix * scaleMatrix;
 
-		glm::mat4 view_matrix = camera->GetViewMatrix(NULL);
-		glm::mat4 projection_matrix = camera->GetProjectionMatrix(NULL);
+			GLint shader_mat = glGetUniformLocation(shader, "world_mat");
+			glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(transf));
 
-		shader_mat = glGetUniformLocation(shader, "view_mat");
-		glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(view_matrix));
+			glm::mat4 view_matrix = camera->GetViewMatrix(NULL);
+			glm::mat4 projection_matrix = camera->GetProjectionMatrix(NULL);
 
-		shader_mat = glGetUniformLocation(shader, "projection_mat");
-		glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(projection_matrix));
+			shader_mat = glGetUniformLocation(shader, "view_mat");
+			glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(view_matrix));
 
-		GLint textX = glGetUniformLocation(shader, "textX");
-		glUniform1f(textX, getGetXUV(s[i]));
+			shader_mat = glGetUniformLocation(shader, "projection_mat");
+			glUniformMatrix4fv(shader_mat, 1, GL_FALSE, glm::value_ptr(projection_matrix));
 
-		GLint textY = glGetUniformLocation(shader, "textY");
-		glUniform1f(textY, getGetYUV(s[i]));
+			GLint textX = glGetUniformLocation(shader, "textX");
+			glUniform1f(textX, getGetXUV(s[i]));
 
-		//Finally, draw using GL_TRIANGLES, which reads 3 at a time until it reaches the total size 
-		glDrawElements(GL_TRIANGLES, geom->size, GL_UNSIGNED_INT, 0);
-
-		translationMatrix = glm::translate(translationMatrix, glm::vec3(scale/1.15, 0, 0));
-		transf = translationMatrix * scaleMatrix;
+			GLint textY = glGetUniformLocation(shader, "textY");
+			glUniform1f(textY, getGetYUV(s[i]));
+ 
+			glDrawElements(GL_TRIANGLES, geom->size, GL_UNSIGNED_INT, 0);
+		}
 	}
+	
 
 	
 }
 
-void TextRenderer::addTextObj(TextObj* to)
+void TextRenderer::addTextObj(TextObj to)
 {
 	textObjs.push_back(to);
 }
 
 void TextRenderer::clearTexts()
 {
-	for (int i = 0; i < textObjs.size(); i++)
-	{
-		delete textObjs[i];
-	}
 	textObjs.clear();
 }
 

@@ -22,6 +22,7 @@ public:
 	void switchToScene(int sceneID);
 	void updateUniforms();
 	void changeScene(bool up);
+	Scene* getCurrentScene();
 
 private:
 	std::vector<Scene*> scenes;
